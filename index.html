@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -184,8 +185,159 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);-webkit-font-
 .fm{font-size:10.5px;font-family:var(--mono);color:var(--ink3);text-align:right;line-height:1.75;}
 
 @media print{#landing,#landing *{display:none!important;}.topbar{display:none!important;}.sec{display:block!important;page-break-before:always;}.sec:first-child{page-break-before:auto;}.card,.kc,.sc,.acard{box-shadow:none!important;break-inside:avoid;}}
-@media(max-width:1080px){.main,.topbar,.foot{padding-left:24px;padding-right:24px;}.g4,.g21{grid-template-columns:1fr 1fr!important;}.g3,.sc-wrap{grid-template-columns:1fr 1fr!important;}}
-@media(max-width:700px){.main{padding:0 16px 60px;}.topbar{padding:0 14px;}.tbbrand{display:none;}.tbtab{font-size:11px;padding:0 9px;}.g4,.g3,.g2,.g21,.sc-wrap{grid-template-columns:1fr!important;}}
+@media(max-width:1080px){
+  .main,.topbar,.foot{padding-left:24px;padding-right:24px;}
+  .g4,.g21{grid-template-columns:1fr 1fr!important;}
+  .g3,.sc-wrap{grid-template-columns:1fr 1fr!important;}
+}
+
+@media(max-width:700px){
+  .main{padding:0 14px 60px;}
+  .topbar{padding:0 10px;height:auto;min-height:54px;flex-wrap:wrap;}
+  .tbbrand{display:none;}
+  .tbnav{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-shrink:0;width:100%;}
+  .tbnav::-webkit-scrollbar{display:none;}
+  .tbtab{font-size:11px;padding:0 10px;white-space:nowrap;flex-shrink:0;}
+  .tbright{border-left:none;padding-left:0;width:100%;justify-content:flex-start;padding:6px 0;gap:5px;flex-wrap:wrap;}
+  .psel{font-size:10px;}
+  .ppill{font-size:9px;}
+  .g4,.g3,.g2,.g21,.sc-wrap{grid-template-columns:1fr!important;}
+
+  /* Landing */
+  .ltop{padding:14px 18px;}
+  .lfoot{padding:14px 18px;flex-direction:column;gap:4px;font-size:10px;}
+  .lbody{padding:40px 20px;}
+  .lh1{font-size:clamp(36px,11vw,64px);letter-spacing:-1.5px;}
+  .lpills{gap:5px;}
+  .lcta{padding:14px 28px;font-size:14px;}
+
+  /* KPI cards */
+  .kv{font-size:28px;}
+  .g4{grid-template-columns:1fr 1fr!important;}
+
+  /* Section headers */
+  .sh h2{font-size:22px;}
+
+  /* P&L table — hide less important columns, make scrollable */
+  .card[style*="overflow:hidden"]{overflow-x:auto!important;}
+  .pltbl{min-width:420px;}
+  .pltbl thead th:nth-child(4),
+  .pltbl tbody td:nth-child(4){display:none;}
+  .pltbl thead th,
+  .pltbl tbody td{padding:9px 10px;font-size:11px;}
+  .pltbl td:first-child{font-size:11px;}
+
+  /* Scenario table */
+  .sc-tbl{min-width:480px;}
+
+  /* Scrollable table wrappers */
+  .pltbl-wrap,.sctbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+
+  /* Scenario cards */
+  .sc-wrap{grid-template-columns:1fr!important;}
+  .sc{padding:18px;}
+  .stitle{font-size:18px;}
+
+  /* Benchmark table */
+  .btbl{min-width:500px;}
+  .btbl th,.btbl td{padding:9px 12px;font-size:11px;}
+
+  /* Action cards */
+  .acard{flex-direction:column;gap:10px;}
+  .aicon{width:36px;height:36px;font-size:16px;}
+  .atitle{font-size:15px;}
+  .adesc{font-size:12px;}
+
+  /* Charts */
+  .card [style*="height:215px"]{height:180px!important;}
+  .card [style*="height:190px"]{height:160px!important;}
+  .card [style*="height:210px"]{height:160px!important;}
+  .card [style*="height:200px"]{height:160px!important;}
+  .card [style*="height:220px"]{height:170px!important;}
+
+  /* Insights box */
+  .ins-box{padding:16px;}
+  .ins-box h3{font-size:14px;}
+  .itxt{font-size:12px;}
+
+  /* Footer */
+  .foot{padding:18px 16px;flex-direction:column;gap:10px;text-align:center;}
+  .fq{font-size:13px;max-width:100%;}
+  .fm{text-align:center;}
+
+  /* AI assistant */
+  .ai-section-bar{margin-top:16px;}
+  .ai-msgs{height:180px;}
+  .ai-sugs{gap:5px;}
+  .ai-sug{font-size:10px;padding:3px 9px;}
+}
+
+/* ── AI Assistant ──────────────────────────────────────── */
+.ai-section-bar{display:flex;justify-content:flex-end;margin-top:22px;margin-bottom:2px;}
+.ai-ask-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--blue-lt);color:var(--blue);
+  border:1px solid #b8ccf8;border-radius:var(--rxs);
+  padding:6px 14px;font-size:11.5px;font-weight:600;
+  font-family:var(--mono);cursor:pointer;
+  transition:var(--tr);letter-spacing:.02em;
+}
+.ai-ask-btn:hover{background:#d6e4fc;border-color:var(--blue);}
+.ai-ask-btn svg{width:13px;height:13px;flex-shrink:0;}
+.ai-panel{
+  display:none;margin-top:12px;
+  border:1px solid #c6d8fa;border-radius:var(--r);
+  overflow:hidden;background:#f7f9ff;
+}
+.ai-panel.open{display:block;animation:fadeUp .22s cubic-bezier(.4,0,.2,1) both;}
+.ai-panel-head{
+  background:var(--blue);color:#fff;
+  padding:10px 18px;font-size:11.5px;font-weight:600;
+  font-family:var(--mono);letter-spacing:.04em;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.ai-panel-head span{display:flex;align-items:center;gap:8px;}
+.ai-dot{width:6px;height:6px;background:#4ade80;border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.ai-close{background:none;border:none;color:rgba(255,255,255,.6);cursor:pointer;font-size:18px;padding:0;line-height:1;transition:color .15s;}
+.ai-close:hover{color:#fff;}
+.ai-msgs{height:210px;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:9px;scroll-behavior:smooth;}
+.ai-msg{max-width:88%;padding:10px 14px;border-radius:10px;font-size:12.5px;line-height:1.62;font-family:var(--sans);}
+.ai-msg.ai{background:#fff;border:1px solid var(--bd);color:var(--ink2);align-self:flex-start;border-bottom-left-radius:3px;}
+.ai-msg.user{background:var(--blue);color:#fff;align-self:flex-end;border-bottom-right-radius:3px;}
+.ai-typing{display:inline-flex;gap:4px;align-items:center;}
+.ai-typing span{width:5px;height:5px;background:var(--ink3);border-radius:50%;animation:bounce .9s infinite;}
+.ai-typing span:nth-child(2){animation-delay:.15s;}
+.ai-typing span:nth-child(3){animation-delay:.3s;}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+.ai-sugs{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 12px;}
+.ai-sug{
+  background:#fff;color:var(--blue);
+  border:1px solid #c6d8fa;border-radius:20px;
+  padding:4px 11px;font-size:11px;font-weight:500;
+  font-family:var(--mono);cursor:pointer;transition:var(--tr);
+}
+.ai-sug:hover{background:var(--blue-lt);border-color:var(--blue);}
+.ai-input-row{
+  display:flex;gap:8px;padding:11px 14px;
+  border-top:1px solid var(--bd);background:#fff;
+}
+.ai-input-row input{
+  flex:1;border:1px solid var(--bd2);border-radius:var(--rxs);
+  padding:8px 12px;font-family:var(--sans);font-size:12.5px;
+  color:var(--ink);outline:none;background:var(--bg);
+  transition:border .15s;
+}
+.ai-input-row input:focus{border-color:var(--blue);}
+.ai-input-row button{
+  background:var(--blue);color:#fff;border:none;
+  border-radius:var(--rxs);padding:8px 16px;
+  cursor:pointer;font-size:12px;font-family:var(--mono);
+  font-weight:500;transition:var(--tr);
+}
+.ai-input-row button:hover{background:#1540b0;}
+.ai-input-row button:disabled{opacity:.45;cursor:not-allowed;}
+@media print{.ai-section-bar,.ai-panel{display:none!important;}}
 </style>
 </head>
 <body>
@@ -278,6 +430,18 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);-webkit-font-
     <div class="card"><div class="ct">Revenue by Segment</div><div class="cs">Full year mix · % of total</div><div style="position:relative;height:190px"><canvas id="cSeg"></canvas></div></div>
     <div class="card"><div class="ct">Cash Flow Waterfall</div><div class="cs" id="s1cfcs">EBITDA → FCF ($M)</div><div style="position:relative;height:190px"><canvas id="cCF"></canvas></div></div>
   </div>
+  <!-- AI Assistant: Executive Summary -->
+  <div class="ai-section-bar"><button class="ai-ask-btn" onclick="aiToggle('s1')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Ask AI</button></div>
+  <div class="ai-panel" id="aip-s1">
+    <div class="ai-panel-head"><span><span class="ai-dot"></span>AI Assistant — Executive Summary</span><button class="ai-close" onclick="aiToggle('s1')">×</button></div>
+    <div class="ai-msgs" id="aim-s1"><div class="ai-msg ai">I can help you interpret the Executive Summary — KPIs, revenue trend, EBITDA bridge, and key insights. What would you like to explore?</div></div>
+    <div class="ai-sugs">
+      <span class="ai-sug" onclick="aiSug('s1',this.textContent)">Why is EBITDA below budget?</span>
+      <span class="ai-sug" onclick="aiSug('s1',this.textContent)">What's driving revenue outperformance?</span>
+      <span class="ai-sug" onclick="aiSug('s1',this.textContent)">How is FCF tracking vs forecast?</span>
+    </div>
+    <div class="ai-input-row"><input type="text" id="aii-s1" placeholder="Ask about the executive summary..." onkeydown="if(event.key==='Enter')aiSend('s1')"><button onclick="aiSend('s1')">Send</button></div>
+  </div>
 </section>
 
 <!-- S2 P&L DETAIL -->
@@ -289,9 +453,23 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);-webkit-font-
     <div class="chip" onclick="plChip('fy',this)">Full Year</div>
   </div>
   <div class="card" style="padding:0;overflow:hidden;">
+    <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
     <table class="pltbl"><thead><tr>
       <th style="width:32%">Line Item</th><th>Actual</th><th>Budget</th><th>Var $</th><th>Var %</th><th>Prior Year</th>
     </tr></thead><tbody id="plBody"></tbody></table>
+    </div>
+  </div>
+  <!-- AI Assistant: P&L Detail -->
+  <div class="ai-section-bar"><button class="ai-ask-btn" onclick="aiToggle('s2')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Ask AI</button></div>
+  <div class="ai-panel" id="aip-s2">
+    <div class="ai-panel-head"><span><span class="ai-dot"></span>AI Assistant — P&L Detail</span><button class="ai-close" onclick="aiToggle('s2')">×</button></div>
+    <div class="ai-msgs" id="aim-s2"><div class="ai-msg ai">I can help you read the P&L table — actuals vs budget, key variance drivers, and line-item analysis. What would you like to know?</div></div>
+    <div class="ai-sugs">
+      <span class="ai-sug" onclick="aiSug('s2',this.textContent)">What's the biggest cost overrun?</span>
+      <span class="ai-sug" onclick="aiSug('s2',this.textContent)">How is gross margin trending?</span>
+      <span class="ai-sug" onclick="aiSug('s2',this.textContent)">Explain the Field Services variance</span>
+    </div>
+    <div class="ai-input-row"><input type="text" id="aii-s2" placeholder="Ask about the P&L..." onkeydown="if(event.key==='Enter')aiSend('s2')"><button onclick="aiSend('s2')">Send</button></div>
   </div>
 </section>
 
@@ -332,6 +510,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);-webkit-font-
     <div class="card"><div class="ct">EBITDA Margin by Scenario (%)</div><div class="cs">Full year projection vs Budget and Prior Year</div><div style="position:relative;height:220px"><canvas id="cScE"></canvas></div></div>
   </div>
   <div class="card" style="padding:0;overflow:hidden;margin-bottom:18px;">
+    <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
     <table class="sc-tbl">
       <thead><tr><th style="width:24%">P&amp;L Line</th><th>Downside</th><th>Base Case</th><th>Upside</th><th>Budget</th><th>Prior Year</th></tr></thead>
       <tbody>
@@ -346,6 +525,19 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);-webkit-font-
         <tr class="tot"><td>Free Cash Flow</td><td>$12M</td><td>$22M</td><td>$34M</td><td>$24M</td><td>$21M</td></tr>
       </tbody>
     </table>
+    </div>
+  </div>
+  <!-- AI Assistant: Scenario Planning -->
+  <div class="ai-section-bar"><button class="ai-ask-btn" onclick="aiToggle('s3')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Ask AI</button></div>
+  <div class="ai-panel" id="aip-s3">
+    <div class="ai-panel-head"><span><span class="ai-dot"></span>AI Assistant — Scenario Planning</span><button class="ai-close" onclick="aiToggle('s3')">×</button></div>
+    <div class="ai-msgs" id="aim-s3"><div class="ai-msg ai">I can help you interpret the three scenarios (Downside / Base / Upside) and their financial implications. What would you like to explore?</div></div>
+    <div class="ai-sugs">
+      <span class="ai-sug" onclick="aiSug('s3',this.textContent)">What's the revenue gap between downside and upside?</span>
+      <span class="ai-sug" onclick="aiSug('s3',this.textContent)">How does Base Case compare to Budget?</span>
+      <span class="ai-sug" onclick="aiSug('s3',this.textContent)">What drives the EBITDA margin difference?</span>
+    </div>
+    <div class="ai-input-row"><input type="text" id="aii-s3" placeholder="Ask about the scenarios..." onkeydown="if(event.key==='Enter')aiSend('s3')"><button onclick="aiSend('s3')">Send</button></div>
   </div>
 </section>
 
@@ -372,6 +564,18 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);-webkit-font-
         <tr class="avg"><td>Peer Average</td><td>21.8%</td><td>+6.1%</td><td>2.2%</td><td>10.8%</td><td>7.6%</td><td></td></tr>
       </tbody>
     </table>
+  </div>
+  <!-- AI Assistant: Market Benchmark -->
+  <div class="ai-section-bar"><button class="ai-ask-btn" onclick="aiToggle('s4')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Ask AI</button></div>
+  <div class="ai-panel" id="aip-s4">
+    <div class="ai-panel-head"><span><span class="ai-dot"></span>AI Assistant — Market Benchmark</span><button class="ai-close" onclick="aiToggle('s4')">×</button></div>
+    <div class="ai-msgs" id="aim-s4"><div class="ai-msg ai">I can help you compare Company X against its peer group across EBITDA margin, revenue growth, churn rate, and capital intensity. What would you like to analyse?</div></div>
+    <div class="ai-sugs">
+      <span class="ai-sug" onclick="aiSug('s4',this.textContent)">Where does Company X rank vs peers?</span>
+      <span class="ai-sug" onclick="aiSug('s4',this.textContent)">Is our churn rate competitive?</span>
+      <span class="ai-sug" onclick="aiSug('s4',this.textContent)">What's our biggest competitive gap?</span>
+    </div>
+    <div class="ai-input-row"><input type="text" id="aii-s4" placeholder="Ask about the benchmarks..." onkeydown="if(event.key==='Enter')aiSend('s4')"><button onclick="aiSend('s4')">Send</button></div>
   </div>
 </section>
 
@@ -403,6 +607,17 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);-webkit-font-
       <div class="adesc">Sports rights renew at +15% YoY with sub-1% contribution margin. Renegotiating to revenue-share structures — bundled with advertising inventory — reduces net cost exposure by $2–3M annually while maintaining subscriber retention value of premium content.</div>
       <span class="aimp">💰 Cost savings: $2–3M / year</span>
     </div></div>
+  <!-- AI Assistant: Management Actions -->
+  <div class="ai-section-bar"><button class="ai-ask-btn" onclick="aiToggle('s5')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Ask AI</button></div>
+  <div class="ai-panel" id="aip-s5">
+    <div class="ai-panel-head"><span><span class="ai-dot"></span>AI Assistant — Management Actions</span><button class="ai-close" onclick="aiToggle('s5')">×</button></div>
+    <div class="ai-msgs" id="aim-s5"><div class="ai-msg ai">I can help you assess the strategic priorities — their financial impact, implementation timelines, and trade-offs. What would you like to explore?</div></div>
+    <div class="ai-sugs">
+      <span class="ai-sug" onclick="aiSug('s5',this.textContent)">Which action has the highest ROI?</span>
+      <span class="ai-sug" onclick="aiSug('s5',this.textContent)">Why is Field Services the top priority?</span>
+      <span class="ai-sug" onclick="aiSug('s5',this.textContent)">How does the churn ML model work?</span>
+    </div>
+    <div class="ai-input-row"><input type="text" id="aii-s5" placeholder="Ask about the management actions..." onkeydown="if(event.key==='Enter')aiSend('s5')"><button onclick="aiSend('s5')">Send</button></div>
   </div>
 </section>
 </main>
@@ -730,6 +945,64 @@ function renderPL(view){
       body.appendChild(ctr);
     });
   });
+}
+
+/* ═══ AI ASSISTANT ═══════════════════════════════════════ */
+const AI_CTX={
+  s1:`You are a financial analyst assistant embedded in Melina Gaudio's Executive Finance Dashboard. The Executive Summary section shows: Total Revenue (YTD Oct 2024: $142.3M, +7.4% vs prior year), EBITDA Margin (21.4% avg YTD, −1.2 pts vs budget of 22.6%), Free Cash Flow ($18.0M YTD), and Subscriber Growth (+3.5% avg). Key variance drivers: Field Services cost overrun (+$4.7M), content rights escalation (+15%), partially offset by volume and price/mix uplift. The EBITDA bridge shows Budget EBITDA at $30.4M with Field Services (−$4.7M) and Content Rights (−$3.2M) as headwinds, and Volume Uplift (+$5.2M) and Price/Mix (+$3.8M) as tailwinds. Revenue by segment: Enterprise 42%, SMB 31%, Consumer 19%, Advertising 8%. Answer concisely and professionally.`,
+  s2:`You are a financial analyst assistant embedded in Melina Gaudio's Executive Finance Dashboard. The P&L Detail section shows three views (Monthly, YTD, Full Year). YTD data: Revenue $142.3M actual vs $135.1M budget (+$7.2M fav), Cost of Revenue −$62.4M vs −$58.9M budget (−$3.5M unfav), Gross Profit $79.9M (56.2% margin), Operating Expenses −$49.5M vs −$45.8M budget (−$3.7M unfav — mainly Field Services −$4.7M overrun), EBITDA $30.4M (21.4% margin, in-line with budget despite mix), Capex −$8.6M, Free Cash Flow $18.0M. Expandable rows include: Revenue (Subscription $98.4M, Enterprise $31.7M, Advertising $9.2M, Other $3.0M), Cost of Revenue (Content $38.1M, Infrastructure $14.7M, Support $9.6M), OpEx (S&M $18.2M, Field Services $14.7M vs $10.0M budget, G&A $10.3M, Tech $6.3M). Answer concisely and professionally.`,
+  s3:`You are a financial analyst assistant embedded in Melina Gaudio's Executive Finance Dashboard. The Scenario Planning section models three full-year outcomes: Downside (Macro Stress): Revenue $198M, EBITDA Margin 17.2%, EBITDA $34.1M, FCF $12M, Subscriber Growth +1.1%, Churn 2.9%, −$20M vs Base Case. Base Case (Steady State): Revenue $218M, EBITDA Margin 21.4%, EBITDA $46.7M, FCF $22M, Subscriber Growth +3.5%, Churn 1.8%, −$2M FCF vs Budget. Upside (Growth Acceleration): Revenue $241M, EBITDA Margin 25.8%, EBITDA $62.2M, FCF $34M, Subscriber Growth +6.2%, Churn 1.2%, +$23M vs Base Case. Budget: Revenue $220M, EBITDA $50M, Margin 22.7%. Prior Year: Revenue $200M, EBITDA $46M, Margin 23.0%. Answer concisely and professionally.`,
+  s4:`You are a financial analyst assistant embedded in Melina Gaudio's Executive Finance Dashboard. The Market Benchmark section compares Company X against peers: Company X: EBITDA 21.4%, Revenue Growth +8.0%, Churn 1.8%, Capex/Sales 9.2%, FCF Yield 8.1% (position: In Range). Peer Alpha: 27.9%, +4.2%, 1.5%, 7.8%, 11.4% (Leader). Peer Beta: 24.1%, +11.3%, 2.1%, 10.4%, 7.9% (Above Avg). Peer Gamma: 19.8%, +6.1%, 2.4%, 11.2%, 6.2% (Below Avg). Peer Delta: 16.2%, +2.8%, 3.1%, 13.6%, 4.8% (Laggard). Peer Average: 21.8%, +6.1%, 2.2%, 10.8%, 7.6%. Company X leads peers on revenue growth (+8% vs 6.1% avg) but trails on EBITDA margin (21.4% vs 21.8% avg) and FCF Yield (8.1% vs 7.6% avg — slightly above). Churn at 1.8% is above the benchmark leader Peer Alpha (1.5%). Answer concisely and professionally.`,
+  s5:`You are a financial analyst assistant embedded in Melina Gaudio's Executive Finance Dashboard. The Management Actions section recommends 4 strategic priorities: Priority 1 (0–60 days): Restructure Field Services Cost Base — route optimisation, first-call resolution targets, selective outsourcing — EBITDA impact +$0.8–1.0M/year; Priority 2 (60 days): Accelerate Enterprise Tier Migration — raise funnel conversion from 12% to 20% — Revenue impact +$6–9M ARR; Priority 3 (90 days): Deploy ML-Driven Churn Prediction — flag at-risk accounts 45 days ahead, retain 30–40% of flagged accounts — Revenue protection $4–6M ARR; Priority 4 (Strategic): Shift Content Rights to Revenue Share — reduce net cost exposure by $2–3M annually. Total potential upside if all actions executed: ~$13–18M incremental value. Answer concisely and professionally.`
+};
+const AI_HX={s1:[],s2:[],s3:[],s4:[],s5:[]};
+
+function aiToggle(s){
+  const p=document.getElementById('aip-'+s);
+  p.classList.toggle('open');
+  if(p.classList.contains('open'))setTimeout(()=>document.getElementById('aii-'+s).focus(),100);
+}
+function aiSug(s,t){document.getElementById('aii-'+s).value=t;aiSend(s);}
+async function aiSend(s){
+  const inp=document.getElementById('aii-'+s);
+  const t=inp.value.trim();if(!t)return;
+  inp.value='';
+  aiAddMsg(s,t,'user');
+  AI_HX[s].push({role:'user',content:t});
+  await aiCall(s);
+}
+function aiAddMsg(s,text,role){
+  const c=document.getElementById('aim-'+s);
+  const d=document.createElement('div');
+  d.className='ai-msg '+role;d.textContent=text;
+  c.appendChild(d);c.scrollTop=c.scrollHeight;return d;
+}
+function aiTyping(s){
+  const c=document.getElementById('aim-'+s);
+  const d=document.createElement('div');
+  d.className='ai-msg ai';d.id='aitp-'+s;
+  d.innerHTML='<span class="ai-typing"><span></span><span></span><span></span></span>';
+  c.appendChild(d);c.scrollTop=c.scrollHeight;
+}
+function aiRmTyping(s){const e=document.getElementById('aitp-'+s);if(e)e.remove();}
+async function aiCall(s){
+  const btn=document.querySelector('#aip-'+s+' .ai-input-row button');
+  const inp=document.getElementById('aii-'+s);
+  btn.disabled=true;inp.disabled=true;aiTyping(s);
+  try{
+    const r=await fetch('https://mgaudio-ai-proxy.meligaudio8.workers.dev/',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:AI_CTX[s],messages:AI_HX[s]})
+    });
+    const data=await r.json();
+    aiRmTyping(s);
+    const reply=data.content?.[0]?.text||'Could not get a response. Please try again.';
+    AI_HX[s].push({role:'assistant',content:reply});
+    aiAddMsg(s,reply,'ai');
+  }catch(e){
+    aiRmTyping(s);
+    aiAddMsg(s,'Connection error. Please check your network and try again.','ai');
+  }finally{btn.disabled=false;inp.disabled=false;inp.focus();}
 }
 
 /* ═══ LANDING → DASH ═════════════════════════════════════ */
