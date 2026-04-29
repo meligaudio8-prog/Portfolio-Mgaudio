@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Executive Finance Dashboard · Melina Gaudio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
+<style>
+:root{
+  --bg:#f8f7f5;--surf:#fff;--s2:#f3f2ef;--bd:#e3e1dd;--bd2:#ccc9c4;
+  --ink:#17171a;--ink2:#4e4c4a;--ink3:#98958f;
+  --blue:#1a4fd6;--blue-lt:#eef2fd;
+  --grn:#067a55;--grn-lt:#edfaf4;
+  --red:#bf1c1c;--red-lt:#fdf0f0;
+  --amb:#8a4900;--amb-lt:#fef5e7;
+  --r:13px;--rsm:8px;--rxs:5px;
+  --sh0:0 1px 3px rgba(0,0,0,.05);
+  --sh1:0 4px 16px rgba(0,0,0,.08),0 1px 3px rgba(0,0,0,.04);
+  --sh2:0 12px 40px rgba(0,0,0,.11),0 3px 10px rgba(0,0,0,.05);
+  --tr:all .2s cubic-bezier(.4,0,.2,1);
+  --serif:'Cormorant Garamond',serif;
+  --sans:'DM Sans',sans-serif;
+  --mono:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5;}
+
+/* LANDING */
+#landing{min-height:100vh;display:flex;flex-direction:column;background:var(--surf);position:relative;overflow:hidden;}
+.lgrid{position:absolute;inset:0;background-image:linear-gradient(var(--bd) .5px,transparent .5px),linear-gradient(90deg,var(--bd) .5px,transparent .5px);background-size:52px 52px;opacity:.28;pointer-events:none;}
+.lglow{position:absolute;top:-20%;right:-10%;width:60%;height:80%;background:radial-gradient(ellipse,rgba(26,79,214,.07) 0%,transparent 65%);pointer-events:none;}
+.ltop{padding:22px 56px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);position:relative;z-index:1;}
+.llogo{font-family:var(--serif);font-size:16px;font-weight:700;letter-spacing:-.2px;}
+.lmeta{font-size:11px;font-family:var(--mono);color:var(--ink3);}
+.lbody{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:64px 40px;position:relative;z-index:1;}
+.lbrow{font-size:11px;font-family:var(--mono);font-weight:500;text-transform:uppercase;letter-spacing:.14em;color:var(--blue);margin-bottom:26px;display:flex;align-items:center;gap:12px;}
+.lbrow::before,.lbrow::after{content:'';flex:0 0 44px;height:.5px;background:var(--blue);opacity:.35;}
+.lh1{font-family:var(--serif);font-size:clamp(44px,7.5vw,88px);font-weight:700;color:var(--ink);letter-spacing:-2.5px;line-height:1;margin-bottom:18px;}
+.lh1 em{font-style:italic;color:var(--blue);}
+.lsub{font-size:17px;color:var(--ink3);font-weight:300;margin-bottom:10px;}
+.lby{font-size:13px;font-family:var(--mono);color:var(--ink3);margin-bottom:52px;}
+.lby strong{color:var(--ink2);font-weight:500;}
+.lpills{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin-bottom:54px;}
+.lpill{font-size:11px;font-family:var(--mono);padding:5px 12px;border-radius:20px;background:var(--s2);border:1px solid var(--bd);color:var(--ink3);}
+.lcta{display:inline-flex;align-items:center;gap:11px;background:var(--ink);color:#fff;padding:16px 38px;border-radius:var(--rsm);font-size:15px;font-weight:600;cursor:pointer;border:none;letter-spacing:-.2px;transition:var(--tr);box-shadow:0 4px 22px rgba(0,0,0,.2);}
+.lcta:hover{background:var(--blue);transform:translateY(-2px);box-shadow:0 8px 30px rgba(26,79,214,.32);}
+.lcta svg{transition:transform .2s;}.lcta:hover svg{transform:translateX(4px);}
+.lfoot{padding:20px 56px;display:flex;justify-content:space-between;border-top:1px solid var(--bd);font-size:11px;font-family:var(--mono);color:var(--ink3);position:relative;z-index:1;}
+
+/* APP */
+#app{display:none;opacity:0;transition:opacity .4s;}
+#app.vis{opacity:1;}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.97);backdrop-filter:blur(18px);border-bottom:1px solid var(--bd);display:flex;align-items:stretch;height:54px;padding:0 48px;}
+.tbbrand{display:flex;flex-direction:column;justify-content:center;padding-right:22px;border-right:1px solid var(--bd);margin-right:22px;flex-shrink:0;}
+.tbbrand h1{font-family:var(--serif);font-size:15px;font-weight:700;color:var(--ink);letter-spacing:-.2px;line-height:1.2;}
+.tbbrand p{font-size:9.5px;color:var(--ink3);font-family:var(--mono);margin-top:1px;}
+.tbnav{display:flex;align-items:stretch;flex:1;}
+.tbtab{display:flex;align-items:center;padding:0 15px;font-size:12.5px;font-weight:500;color:var(--ink3);cursor:pointer;border-bottom:2px solid transparent;transition:var(--tr);white-space:nowrap;user-select:none;}
+.tbtab:hover{color:var(--ink2);}
+.tbtab.active{color:var(--blue);border-bottom-color:var(--blue);}
+.tbright{display:flex;align-items:center;gap:7px;padding-left:18px;border-left:1px solid var(--bd);flex-shrink:0;}
+.psel{font-size:11px;font-family:var(--mono);font-weight:500;padding:5px 26px 5px 9px;border-radius:var(--rxs);border:1px solid var(--bd2);background:var(--s2);color:var(--ink2);cursor:pointer;outline:none;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 4.5L8 0' fill='%2398958f'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 7px center;}
+.ppill{font-size:10px;font-family:var(--mono);font-weight:500;padding:4px 10px;border-radius:12px;background:var(--blue-lt);color:var(--blue);white-space:nowrap;}
+.pdfbtn{display:flex;align-items:center;gap:5px;padding:5px 10px;background:var(--s2);border:1px solid var(--bd2);border-radius:var(--rxs);font-size:11px;font-family:var(--mono);color:var(--ink2);cursor:pointer;transition:var(--tr);}
+.pdfbtn:hover{border-color:var(--blue);color:var(--blue);}
+
+/* LAYOUT */
+.main{max-width:1320px;margin:0 auto;padding:0 48px 80px;}
+.sec{display:none;padding-top:36px;}
+.sec.active{display:block;animation:fadeUp .34s cubic-bezier(.4,0,.2,1) both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.sh{margin-bottom:28px;}
+.sh h2{font-family:var(--serif);font-size:30px;font-weight:700;color:var(--ink);letter-spacing:-.6px;line-height:1.15;}
+.sh p{font-size:13px;color:var(--ink3);margin-top:6px;}
+
+/* GRIDS */
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
+.g21{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:18px;}
+.mb18{margin-bottom:18px;}
+
+/* CARD */
+.card{background:var(--surf);border:1px solid var(--bd);border-radius:var(--r);padding:22px;box-shadow:var(--sh0);transition:var(--tr);}
+.card:hover{box-shadow:var(--sh1);transform:translateY(-1px);}
+.ct{font-size:12.5px;font-weight:600;color:var(--ink);margin-bottom:3px;}
+.cs{font-size:11.5px;color:var(--ink3);margin-bottom:16px;}
+
+/* KPI */
+.kc{background:var(--surf);border:1px solid var(--bd);border-radius:var(--r);padding:20px 22px;box-shadow:var(--sh0);transition:var(--tr);position:relative;overflow:hidden;}
+.kc::before{content:'';position:absolute;top:0;left:0;right:0;height:2.5px;background:var(--kca,var(--blue));}
+.kc:hover{box-shadow:var(--sh1);transform:translateY(-2px);}
+.kl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--ink3);margin-bottom:10px;}
+.kv{font-family:var(--serif);font-size:36px;font-weight:700;color:var(--ink);letter-spacing:-1.2px;line-height:1;margin-bottom:10px;}
+.km{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--ink3);}
+.badge{display:inline-flex;align-items:center;font-size:10.5px;font-weight:700;font-family:var(--mono);padding:3px 8px;border-radius:4px;white-space:nowrap;}
+.bu{background:var(--grn-lt);color:var(--grn);}
+.bdn{background:var(--red-lt);color:var(--red);}
+.bn{background:var(--blue-lt);color:var(--blue);}
+.bw{background:var(--amb-lt);color:var(--amb);}
+
+/* INSIGHTS */
+.ins-box{background:linear-gradient(135deg,#f0f5ff,#eef2fd);border:1px solid #c6d8fa;border-radius:var(--r);padding:22px;}
+.ins-box h3{font-family:var(--serif);font-size:16px;font-weight:600;color:var(--blue);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.ii{display:flex;gap:11px;padding:12px 0;border-bottom:1px solid rgba(26,79,214,.1);}
+.ii:last-child{border-bottom:none;padding-bottom:0;}
+.idot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:8px;}
+.itxt{font-size:12.5px;color:var(--ink2);line-height:1.65;}
+.itxt strong{color:var(--ink);}
+
+/* P&L TABLE */
+.chips{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+.chip{font-size:12px;font-weight:500;padding:6px 14px;border-radius:20px;border:1px solid var(--bd2);background:var(--surf);color:var(--ink2);cursor:pointer;transition:var(--tr);}
+.chip:hover{border-color:var(--blue);color:var(--blue);}
+.chip.active{background:var(--blue);color:#fff;border-color:var(--blue);}
+.pltbl{width:100%;border-collapse:collapse;}
+.pltbl thead th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);padding:11px 16px;text-align:right;border-bottom:2px solid var(--bd);background:var(--s2);white-space:nowrap;}
+.pltbl thead th:first-child{text-align:left;}
+.pltbl tbody tr{border-bottom:1px solid var(--bd);transition:background .12s;}
+.pltbl tbody tr.xrow{cursor:pointer;}
+.pltbl tbody tr.xrow:hover{background:var(--s2);}
+.pltbl tbody tr.xopen{background:#f0f4ff;}
+.pltbl tbody tr.crow td:first-child{padding-left:42px;}
+.pltbl td{padding:11px 16px;font-size:12.5px;text-align:right;color:var(--ink2);font-family:var(--mono);}
+.pltbl td:first-child{text-align:left;font-family:var(--sans);font-weight:500;color:var(--ink);display:flex;align-items:center;gap:8px;}
+.pltbl tr.sub td{font-weight:700;color:var(--ink);background:var(--s2);}
+.pltbl tr.tot td{font-weight:700;color:#fff;background:var(--ink);}
+.xbtn{width:18px;height:18px;border-radius:4px;background:var(--blue-lt);color:var(--blue);font-size:12px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .18s;}
+.vp{color:var(--grn)!important;}.vn{color:var(--red)!important;}
+
+/* SCENARIO */
+.sc-wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px;}
+.sc{background:var(--surf);border:1.5px solid var(--bd);border-radius:var(--r);padding:26px;box-shadow:var(--sh0);transition:var(--tr);}
+.sc:hover{box-shadow:var(--sh2);transform:translateY(-3px);}
+.sc.base{border-color:var(--blue);}.sc.down{border-color:#c99a3a;}.sc.up{border-color:var(--grn);}
+.stag{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:4px 10px;border-radius:20px;margin-bottom:14px;}
+.stag.base{background:var(--blue-lt);color:var(--blue);}
+.stag.down{background:var(--amb-lt);color:var(--amb);}
+.stag.up{background:var(--grn-lt);color:var(--grn);}
+.stitle{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--ink);margin-bottom:18px;line-height:1.2;}
+.srow{display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--bd);}
+.srow:last-child{border-bottom:none;}
+.slbl{font-size:12px;color:var(--ink3);}
+.sval{font-family:var(--mono);font-size:16px;font-weight:500;}
+.sval.blue{color:var(--blue);}.sval.green{color:var(--grn);}.sval.amber{color:var(--amb);}
+/* Scenario comparison table */
+.sc-tbl{width:100%;border-collapse:collapse;}
+.sc-tbl th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);padding:10px 16px;text-align:right;border-bottom:2px solid var(--bd);background:var(--s2);white-space:nowrap;}
+.sc-tbl th:first-child{text-align:left;}
+.sc-tbl td{padding:10px 16px;font-size:12px;text-align:right;font-family:var(--mono);color:var(--ink2);border-bottom:1px solid var(--bd);}
+.sc-tbl td:first-child{text-align:left;font-family:var(--sans);font-weight:500;color:var(--ink);}
+.sc-tbl tr.sub td{font-weight:700;background:var(--s2);color:var(--ink);}
+.sc-tbl tr.tot td{font-weight:700;color:#fff;background:var(--ink);}
+.sc-tbl .cdn{color:var(--red)!important;}.sc-tbl .cup{color:var(--grn)!important;}
+
+/* BENCHMARK */
+.btbl{width:100%;border-collapse:collapse;}
+.btbl th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);padding:11px 18px;text-align:right;border-bottom:2px solid var(--bd);background:var(--s2);white-space:nowrap;}
+.btbl th:first-child{text-align:left;}
+.btbl td{padding:12px 18px;font-family:var(--mono);font-size:12.5px;text-align:right;border-bottom:1px solid var(--bd);color:var(--ink2);}
+.btbl td:first-child{font-family:var(--sans);font-weight:600;color:var(--ink);text-align:left;}
+.btbl tr.you td{background:var(--blue-lt);}.btbl tr.you td:first-child{color:var(--blue);}
+.btbl tr.avg td{background:var(--s2);font-weight:600;color:var(--ink);}
+.btbl tr:last-child td{border-bottom:none;}
+
+/* ACTIONS */
+.acard{background:var(--surf);border:1px solid var(--bd);border-radius:var(--r);padding:22px;box-shadow:var(--sh0);transition:var(--tr);display:flex;gap:16px;align-items:flex-start;}
+.acard:hover{box-shadow:var(--sh1);transform:translateY(-2px);}
+.aicon{width:44px;height:44px;border-radius:var(--rsm);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.apri{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;}
+.atitle{font-family:var(--serif);font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px;line-height:1.25;}
+.adesc{font-size:12.5px;color:var(--ink2);line-height:1.68;margin-bottom:13px;}
+.aimp{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-family:var(--mono);font-weight:500;color:var(--blue);background:var(--blue-lt);padding:5px 10px;border-radius:var(--rxs);}
+
+/* FOOTER */
+.foot{border-top:1px solid var(--bd);padding:26px 48px;display:flex;align-items:center;justify-content:space-between;background:var(--surf);}
+.fq{font-family:var(--serif);font-size:15px;font-style:italic;color:var(--ink3);max-width:480px;}
+.fq em{color:var(--blue);font-style:normal;font-weight:700;}
+.fm{font-size:10.5px;font-family:var(--mono);color:var(--ink3);text-align:right;line-height:1.75;}
+
+@media print{#landing,#landing *{display:none!important;}.topbar{display:none!important;}.sec{display:block!important;page-break-before:always;}.sec:first-child{page-break-before:auto;}.card,.kc,.sc,.acard{box-shadow:none!important;break-inside:avoid;}}
+@media(max-width:1080px){.main,.topbar,.foot{padding-left:24px;padding-right:24px;}.g4,.g21{grid-template-columns:1fr 1fr!important;}.g3,.sc-wrap{grid-template-columns:1fr 1fr!important;}}
+@media(max-width:700px){.main{padding:0 16px 60px;}.topbar{padding:0 14px;}.tbbrand{display:none;}.tbtab{font-size:11px;padding:0 9px;}.g4,.g3,.g2,.g21,.sc-wrap{grid-template-columns:1fr!important;}}
+</style>
+</head>
+<body>
+
+<!-- LANDING -->
+<div id="landing">
+  <div class="lgrid"></div><div class="lglow"></div>
+  <header class="ltop">
+    <div class="llogo">Executive Finance Dashboard</div>
+    <div class="lmeta"></div>
+  </header>
+  <div class="lbody">
+    <div class="lbrow"></div>
+    <h1 class="lh1">Executive<br><em>Finance</em><br>Dashboard</h1>
+    <p class="lsub">Strategic Finance Portfolio Project</p>
+    <p class="lby">FY Sample Data &nbsp;|&nbsp; FP&amp;A Portfolio Project &nbsp;|&nbsp; <strong>Melina Gaudio</strong></p>
+    <div class="lpills">
+      <span class="lpill">Executive Summary</span><span class="lpill">P&amp;L Detail</span>
+      <span class="lpill">Scenario Planning</span><span class="lpill">Market Benchmark</span>
+      <span class="lpill">Management Actions</span>
+    </div>
+    <button class="lcta" onclick="enterDash()">
+      Enter Dashboard
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3.5 9h11M10 4.5 14.5 9 10 13.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+  <footer class="lfoot">
+    <span>FY 2024 · Illustrative Sample Data</span>
+    <span>Melina Gaudio · FP&amp;A Portfolio Project</span>
+  </footer>
+</div>
+
+<!-- APP -->
+<div id="app">
+<header class="topbar">
+  <div class="tbbrand"><h1>Executive Finance Dashboard</h1><p>Strategic Finance · Melina Gaudio</p></div>
+  <nav class="tbnav">
+    <div class="tbtab active" onclick="goTab('s1',this)">Executive Summary</div>
+    <div class="tbtab" onclick="goTab('s2',this)">P&amp;L Detail</div>
+    <div class="tbtab" onclick="goTab('s3',this)">Scenario Planning</div>
+    <div class="tbtab" onclick="goTab('s4',this)">Market Benchmark</div>
+    <div class="tbtab" onclick="goTab('s5',this)">Management Actions</div>
+  </nav>
+  <div class="tbright">
+    <select class="psel" id="moSel" onchange="periodChange()">
+      <option value="1">January</option><option value="2">February</option><option value="3">March</option>
+      <option value="4">April</option><option value="5">May</option><option value="6">June</option>
+      <option value="7">July</option><option value="8">August</option><option value="9">September</option>
+      <option value="10" selected>October</option><option value="11">November</option><option value="12">December</option>
+    </select>
+    <select class="psel" id="rngSel" onchange="periodChange()">
+      <option value="month">Monthly</option>
+      <option value="ytd" selected>YTD</option>
+      <option value="fy">Full Year</option>
+    </select>
+    <span class="ppill" id="ppill">YTD October 2024</span>
+    <button class="pdfbtn" onclick="window.print()">
+      <svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M2 2h8l2 2v9a1 1 0 01-1 1H3a1 1 0 01-1-1V3z" stroke="currentColor" stroke-width="1.3"/><path d="M5 8h4M5 10.5h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      Export PDF
+    </button>
+  </div>
+</header>
+
+<main class="main">
+
+<!-- S1 EXECUTIVE SUMMARY -->
+<section class="sec active" id="s1">
+  <div class="sh"><h2>Executive Summary</h2><p id="s1p">YTD October 2024 · 10 months consolidated · Company X</p></div>
+  <div class="g4">
+    <div class="kc" style="--kca:var(--blue)"><div class="kl">Total Revenue</div><div class="kv" id="kRev">—</div><div class="km"><span class="badge" id="kRevB">—</span><span id="kRevL">—</span></div></div>
+    <div class="kc" style="--kca:var(--red)"><div class="kl">EBITDA Margin</div><div class="kv" id="kEb">—</div><div class="km"><span class="badge" id="kEbB">—</span><span id="kEbL">—</span></div></div>
+    <div class="kc" style="--kca:var(--grn)"><div class="kl">Free Cash Flow</div><div class="kv" id="kFcf">—</div><div class="km"><span class="badge" id="kFcfB">—</span><span id="kFcfL">—</span></div></div>
+    <div class="kc" style="--kca:var(--grn)"><div class="kl">Subscriber Growth</div><div class="kv" id="kSub">—</div><div class="km"><span class="badge" id="kSubB">—</span><span id="kSubL">—</span></div></div>
+  </div>
+  <div class="g21">
+    <div class="card">
+      <div class="ct">12-Month Revenue Trend</div>
+      <div class="cs" id="s1revcs">Actual vs Budget — monthly ($M)</div>
+      <div style="position:relative;height:215px"><canvas id="cRev"></canvas></div>
+    </div>
+    <div class="ins-box">
+      <h3><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="7"/><path d="M8 7v4M8 5.5v.5" stroke-linecap="round"/></svg>Key Insights</h3>
+      <div class="ii"><div class="idot" style="background:var(--blue)"></div><div class="itxt" id="ii1">—</div></div>
+      <div class="ii"><div class="idot" style="background:var(--red)"></div><div class="itxt" id="ii2">—</div></div>
+      <div class="ii"><div class="idot" style="background:var(--grn)"></div><div class="itxt" id="ii3">—</div></div>
+    </div>
+  </div>
+  <div class="g3">
+    <div class="card"><div class="ct">EBITDA Bridge vs Budget</div><div class="cs" id="s1brcs">Key variance drivers ($M)</div><div style="position:relative;height:190px"><canvas id="cBridge"></canvas></div></div>
+    <div class="card"><div class="ct">Revenue by Segment</div><div class="cs">Full year mix · % of total</div><div style="position:relative;height:190px"><canvas id="cSeg"></canvas></div></div>
+    <div class="card"><div class="ct">Cash Flow Waterfall</div><div class="cs" id="s1cfcs">EBITDA → FCF ($M)</div><div style="position:relative;height:190px"><canvas id="cCF"></canvas></div></div>
+  </div>
+</section>
+
+<!-- S2 P&L DETAIL -->
+<section class="sec" id="s2">
+  <div class="sh"><h2>P&amp;L Detail</h2><p id="s2p">YTD October 2024 · Click rows to expand</p></div>
+  <div class="chips" id="plchips">
+    <div class="chip" onclick="plChip('month',this)">Monthly</div>
+    <div class="chip active" onclick="plChip('ytd',this)">YTD</div>
+    <div class="chip" onclick="plChip('fy',this)">Full Year</div>
+  </div>
+  <div class="card" style="padding:0;overflow:hidden;">
+    <table class="pltbl"><thead><tr>
+      <th style="width:32%">Line Item</th><th>Actual</th><th>Budget</th><th>Var $</th><th>Var %</th><th>Prior Year</th>
+    </tr></thead><tbody id="plBody"></tbody></table>
+  </div>
+</section>
+
+<!-- S3 SCENARIO PLANNING -->
+<section class="sec" id="s3">
+  <div class="sh"><h2>Scenario Planning</h2><p>Full-year projections under three macro environments · Company X · FY 2024</p></div>
+  <div class="sc-wrap">
+    <div class="sc down"><span class="stag down">Downside</span><div class="stitle">Macro Stress</div>
+      <div class="srow"><span class="slbl">Revenue</span><span class="sval amber">$198M</span></div>
+      <div class="srow"><span class="slbl">EBITDA Margin</span><span class="sval amber">17.2%</span></div>
+      <div class="srow"><span class="slbl">EBITDA ($)</span><span class="sval amber">$34.1M</span></div>
+      <div class="srow"><span class="slbl">Free Cash Flow</span><span class="sval amber">$12M</span></div>
+      <div class="srow"><span class="slbl">Subscriber Growth</span><span class="sval amber">+1.1%</span></div>
+      <div class="srow"><span class="slbl">Monthly Churn</span><span class="sval amber">2.9%</span></div>
+      <div class="srow"><span class="slbl">vs Base Case</span><span class="sval amber">−$20M Rev</span></div>
+    </div>
+    <div class="sc base"><span class="stag base">Base Case</span><div class="stitle">Steady State</div>
+      <div class="srow"><span class="slbl">Revenue</span><span class="sval blue">$218M</span></div>
+      <div class="srow"><span class="slbl">EBITDA Margin</span><span class="sval blue">21.4%</span></div>
+      <div class="srow"><span class="slbl">EBITDA ($)</span><span class="sval blue">$46.7M</span></div>
+      <div class="srow"><span class="slbl">Free Cash Flow</span><span class="sval blue">$22M</span></div>
+      <div class="srow"><span class="slbl">Subscriber Growth</span><span class="sval blue">+3.5%</span></div>
+      <div class="srow"><span class="slbl">Monthly Churn</span><span class="sval blue">1.8%</span></div>
+      <div class="srow"><span class="slbl">vs Budget</span><span class="sval blue">−$2M FCF</span></div>
+    </div>
+    <div class="sc up"><span class="stag up">Upside</span><div class="stitle">Growth Acceleration</div>
+      <div class="srow"><span class="slbl">Revenue</span><span class="sval green">$241M</span></div>
+      <div class="srow"><span class="slbl">EBITDA Margin</span><span class="sval green">25.8%</span></div>
+      <div class="srow"><span class="slbl">EBITDA ($)</span><span class="sval green">$62.2M</span></div>
+      <div class="srow"><span class="slbl">Free Cash Flow</span><span class="sval green">$34M</span></div>
+      <div class="srow"><span class="slbl">Subscriber Growth</span><span class="sval green">+6.2%</span></div>
+      <div class="srow"><span class="slbl">Monthly Churn</span><span class="sval green">1.2%</span></div>
+      <div class="srow"><span class="slbl">vs Base Case</span><span class="sval green">+$23M Rev</span></div>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ct">Revenue by Scenario ($M)</div><div class="cs">Downside / Base / Upside vs Budget and Prior Year</div><div style="position:relative;height:220px"><canvas id="cScR"></canvas></div></div>
+    <div class="card"><div class="ct">EBITDA Margin by Scenario (%)</div><div class="cs">Full year projection vs Budget and Prior Year</div><div style="position:relative;height:220px"><canvas id="cScE"></canvas></div></div>
+  </div>
+  <div class="card" style="padding:0;overflow:hidden;margin-bottom:18px;">
+    <table class="sc-tbl">
+      <thead><tr><th style="width:24%">P&amp;L Line</th><th>Downside</th><th>Base Case</th><th>Upside</th><th>Budget</th><th>Prior Year</th></tr></thead>
+      <tbody>
+        <tr><td>Revenue</td><td class="cdn">$198M</td><td>$218M</td><td class="cup">$241M</td><td>$220M</td><td>$200M</td></tr>
+        <tr><td>Cost of Revenue</td><td>($86M)</td><td>($95M)</td><td>($104M)</td><td>($94M)</td><td>($86M)</td></tr>
+        <tr class="sub"><td>Gross Profit</td><td class="cdn">$112M</td><td>$123M</td><td class="cup">$137M</td><td>$126M</td><td>$114M</td></tr>
+        <tr><td>Gross Margin %</td><td class="cdn">56.6%</td><td>56.4%</td><td class="cup">56.8%</td><td>57.3%</td><td>57.0%</td></tr>
+        <tr><td>Operating Expenses</td><td>($78M)</td><td>($76M)</td><td>($75M)</td><td>($76M)</td><td>($68M)</td></tr>
+        <tr class="sub"><td>EBITDA</td><td class="cdn">$34.1M</td><td>$46.7M</td><td class="cup">$62.2M</td><td>$50M</td><td>$46M</td></tr>
+        <tr><td>EBITDA Margin %</td><td class="cdn">17.2%</td><td>21.4%</td><td class="cup">25.8%</td><td>22.7%</td><td>23.0%</td></tr>
+        <tr><td>Capex</td><td>($10M)</td><td>($13M)</td><td>($14M)</td><td>($14M)</td><td>($12M)</td></tr>
+        <tr class="tot"><td>Free Cash Flow</td><td>$12M</td><td>$22M</td><td>$34M</td><td>$24M</td><td>$21M</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- S4 MARKET BENCHMARK -->
+<section class="sec" id="s4">
+  <div class="sh"><h2>Market Benchmark</h2><p>Company X vs peer group · Most recent fiscal year · Company X highlighted in blue</p></div>
+  <div class="g2 mb18">
+    <div class="card"><div class="ct">EBITDA Margin — Ranked (%)</div><div class="cs">Company X vs peers · horizontal bar</div><div style="position:relative;height:210px"><canvas id="cB1"></canvas></div></div>
+    <div class="card"><div class="ct">Revenue Growth vs Peers (%)</div><div class="cs">Year-over-year growth</div><div style="position:relative;height:210px"><canvas id="cB2"></canvas></div></div>
+  </div>
+  <div class="g2 mb18">
+    <div class="card"><div class="ct">Monthly Churn Rate (%)</div><div class="cs">Lower is better · Company X in blue</div><div style="position:relative;height:200px"><canvas id="cB3"></canvas></div></div>
+    <div class="card"><div class="ct">Capex / Sales (%)</div><div class="cs">Capital intensity · lower indicates efficiency</div><div style="position:relative;height:200px"><canvas id="cB4"></canvas></div></div>
+  </div>
+  <div class="card" style="padding:0;overflow:hidden;">
+    <table class="btbl">
+      <thead><tr><th>Company</th><th>EBITDA Margin</th><th>Revenue Growth</th><th>Churn Rate</th><th>Capex/Sales</th><th>FCF Yield</th><th>Position</th></tr></thead>
+      <tbody>
+        <tr class="you"><td>Company X (You)</td><td>21.4%</td><td>+8.0%</td><td>1.8%</td><td>9.2%</td><td>8.1%</td><td><span class="badge bn">In Range</span></td></tr>
+        <tr><td>Peer Alpha</td><td>27.9%</td><td>+4.2%</td><td>1.5%</td><td>7.8%</td><td>11.4%</td><td><span class="badge bu">Leader</span></td></tr>
+        <tr><td>Peer Beta</td><td>24.1%</td><td>+11.3%</td><td>2.1%</td><td>10.4%</td><td>7.9%</td><td><span class="badge bu">Above Avg</span></td></tr>
+        <tr><td>Peer Gamma</td><td>19.8%</td><td>+6.1%</td><td>2.4%</td><td>11.2%</td><td>6.2%</td><td><span class="badge bw">Below Avg</span></td></tr>
+        <tr><td>Peer Delta</td><td>16.2%</td><td>+2.8%</td><td>3.1%</td><td>13.6%</td><td>4.8%</td><td><span class="badge bdn">Laggard</span></td></tr>
+        <tr class="avg"><td>Peer Average</td><td>21.8%</td><td>+6.1%</td><td>2.2%</td><td>10.8%</td><td>7.6%</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- S5 MANAGEMENT ACTIONS -->
+<section class="sec" id="s5">
+  <div class="sh"><h2>Management Actions</h2><p>Executive recommendations ranked by strategic impact and urgency · FY 2024</p></div>
+  <div class="g2">
+    <div class="acard"><div class="aicon" style="background:#fee2e2">🎯</div><div>
+      <div class="apri" style="color:var(--red)">Priority 1 · Immediate · 0–60 days</div>
+      <div class="atitle">Restructure Field Services Cost Base</div>
+      <div class="adesc">Field Services is the single largest EBITDA variance driver — $4.7M over budget YTD. Route optimisation, first-call resolution targets, and selective outsourcing of low-complexity installations deliver 15–20% cost reduction within 90 days with no revenue impact.</div>
+      <span class="aimp">📉 EBITDA impact: +$0.8–1.0M / year</span>
+    </div></div>
+    <div class="acard"><div class="aicon" style="background:var(--amb-lt)">⚡</div><div>
+      <div class="apri" style="color:var(--amb)">Priority 2 · 60 Days</div>
+      <div class="atitle">Accelerate Enterprise Tier Migration</div>
+      <div class="adesc">Enterprise carries 34% higher ARPU than SMB and grows at +18% YoY. Current funnel converts only 12% of eligible accounts. A dedicated onboarding team and restructured sales incentives can raise conversion to 20%, adding $6–9M incremental ARR over 12 months.</div>
+      <span class="aimp">📈 Revenue impact: +$6–9M ARR</span>
+    </div></div>
+    <div class="acard"><div class="aicon" style="background:var(--grn-lt)">🔄</div><div>
+      <div class="apri" style="color:var(--grn)">Priority 3 · 90 Days</div>
+      <div class="atitle">Deploy ML-Driven Churn Prediction</div>
+      <div class="adesc">Churn of 1.8%/month still exceeds benchmark peers (1.4%). An ML early-warning system flags at-risk accounts 45 days ahead of churn using usage signals. Proactive outreach projected to retain 30–40% of flagged accounts, protecting $4–6M ARR annually.</div>
+      <span class="aimp">🛡 Revenue protection: $4–6M ARR</span>
+    </div></div>
+    <div class="acard"><div class="aicon" style="background:var(--blue-lt)">💡</div><div>
+      <div class="apri" style="color:var(--blue)">Priority 4 · Strategic</div>
+      <div class="atitle">Shift Content Rights to Revenue Share</div>
+      <div class="adesc">Sports rights renew at +15% YoY with sub-1% contribution margin. Renegotiating to revenue-share structures — bundled with advertising inventory — reduces net cost exposure by $2–3M annually while maintaining subscriber retention value of premium content.</div>
+      <span class="aimp">💰 Cost savings: $2–3M / year</span>
+    </div></div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="fq">"Finance is no longer only reporting. It is <em>decision architecture</em>."</div>
+  <div class="fm">Executive Finance Dashboard<br>Melina Gaudio · </div>
+</footer>
+</div><!-- #app -->
+
+<script>
+/* ═══ DATA ═══════════════════════════════════════════════ */
+const MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const REV =[10.2,11.4,12.1,11.8,13.2,14.1,12.8,13.9,14.7,15.4,16.0,16.5];
+const BUD =[10.0,10.8,11.5,12.0,12.8,13.5,12.5,13.2,14.0,14.5,14.8,15.2];
+const EBPCT=[21.8,19.2,22.4,20.1,21.9,23.2,20.8,22.1,24.6,21.4,22.0,22.5];
+const FCF =[1.4,1.2,1.6,1.5,1.8,2.0,1.7,1.9,2.3,1.9,2.1,2.2];
+const SUB =[2.1,2.3,2.8,2.5,3.1,3.4,3.0,3.3,3.8,3.5,3.6,3.7];
+const CHN =[2.1,2.0,1.9,1.9,1.8,1.8,1.9,1.8,1.7,1.7,1.8,1.8];
+
+/* P&L tables */
+const PL={
+  ytd:[
+    {id:'rev',l:'Revenue',a:142.3,b:135.1,py:131.8,ch:[{l:'Subscription Revenue',a:98.4,b:91.2,py:87.3},{l:'Enterprise Contracts',a:31.7,b:30.4,py:28.9},{l:'Advertising Revenue',a:9.2,b:10.5,py:12.1},{l:'Other Revenue',a:3.0,b:3.0,py:3.5}]},
+    {id:'cogs',l:'Cost of Revenue',a:-62.4,b:-58.9,py:-56.2,ch:[{l:'Content & Programming',a:-38.1,b:-34.2,py:-32.4},{l:'Infrastructure & Network',a:-14.7,b:-15.1,py:-14.1},{l:'Customer Support',a:-9.6,b:-9.6,py:-9.7}]},
+    {id:'gp',l:'Gross Profit',a:79.9,b:76.2,py:75.6,sub:1},
+    {id:'opex',l:'Operating Expenses',a:-49.5,b:-45.8,py:-44.2,ch:[{l:'Sales & Marketing',a:-18.2,b:-16.8,py:-15.9},{l:'Field Services',a:-14.7,b:-10.0,py:-12.2},{l:'General & Administrative',a:-10.3,b:-11.2,py:-10.4},{l:'Technology & Product',a:-6.3,b:-7.8,py:-5.7}]},
+    {id:'eb',l:'EBITDA',a:30.4,b:30.4,py:31.4,sub:1},
+    {id:'cap',l:'Capex',a:-8.6,b:-9.2,py:-8.1},
+    {id:'fcf',l:'Free Cash Flow',a:18.0,b:18.2,py:19.8,tot:1}
+  ],
+  month:[
+    {id:'rev',l:'Revenue',a:15.4,b:14.5,py:14.1,ch:[{l:'Subscription Revenue',a:10.7,b:9.9,py:9.5},{l:'Enterprise Contracts',a:3.4,b:3.3,py:3.2},{l:'Advertising Revenue',a:1.0,b:1.0,py:1.1},{l:'Other Revenue',a:0.3,b:0.3,py:0.3}]},
+    {id:'cogs',l:'Cost of Revenue',a:-6.8,b:-6.2,py:-6.0,ch:[{l:'Content & Programming',a:-4.1,b:-3.6,py:-3.5},{l:'Infrastructure & Network',a:-1.6,b:-1.6,py:-1.5},{l:'Customer Support',a:-1.1,b:-1.0,py:-1.0}]},
+    {id:'gp',l:'Gross Profit',a:8.6,b:8.3,py:8.1,sub:1},
+    {id:'opex',l:'Operating Expenses',a:-5.3,b:-4.9,py:-4.7,ch:[{l:'Sales & Marketing',a:-1.9,b:-1.8,py:-1.7},{l:'Field Services',a:-1.6,b:-1.1,py:-1.3},{l:'General & Administrative',a:-1.1,b:-1.2,py:-1.1},{l:'Technology & Product',a:-0.7,b:-0.8,py:-0.6}]},
+    {id:'eb',l:'EBITDA',a:3.3,b:3.4,py:3.4,sub:1},
+    {id:'cap',l:'Capex',a:-0.9,b:-1.0,py:-0.9},
+    {id:'fcf',l:'Free Cash Flow',a:1.9,b:1.9,py:2.1,tot:1}
+  ],
+  fy:[
+    {id:'rev',l:'Revenue',a:218,b:220,py:200,ch:[{l:'Subscription Revenue',a:151,b:148,py:132},{l:'Enterprise Contracts',a:43,b:44,py:40},{l:'Advertising Revenue',a:17,b:19,py:20},{l:'Other Revenue',a:7,b:9,py:8}]},
+    {id:'cogs',l:'Cost of Revenue',a:-95,b:-94,py:-86,ch:[{l:'Content & Programming',a:-58,b:-56,py:-49},{l:'Infrastructure & Network',a:-22,b:-23,py:-21},{l:'Customer Support',a:-15,b:-15,py:-16}]},
+    {id:'gp',l:'Gross Profit',a:123,b:126,py:114,sub:1},
+    {id:'opex',l:'Operating Expenses',a:-76,b:-76,py:-68,ch:[{l:'Sales & Marketing',a:-28,b:-27,py:-24},{l:'Field Services',a:-22,b:-18,py:-19},{l:'General & Administrative',a:-16,b:-18,py:-16},{l:'Technology & Product',a:-10,b:-13,py:-9}]},
+    {id:'eb',l:'EBITDA',a:47,b:50,py:46,sub:1},
+    {id:'cap',l:'Capex',a:-13,b:-14,py:-12},
+    {id:'fcf',l:'Free Cash Flow',a:22,b:24,py:21,tot:1}
+  ]
+};
+
+/* ═══ STATE ══════════════════════════════════════════════ */
+let MO_CUR=10, RNG_CUR='ytd';
+const CH={};
+let plView='ytd';
+
+/* ═══ HELPERS ════════════════════════════════════════════ */
+const fM=(v,d=1)=>v==null?'—':v<0?`($${Math.abs(v).toFixed(d)}M)`:`$${v.toFixed(d)}M`;
+const fP=v=>v==null?'—':(v>0?'+':'')+v.toFixed(1)+'%';
+const vpc=(a,b)=>b?((a-b)/Math.abs(b)*100):null;
+const vc=v=>v==null?'':v>0?'vp':'vn';
+const st=(id,v)=>{const e=document.getElementById(id);if(e)e.innerHTML=v;};
+const GC='rgba(0,0,0,.05)', TF={size:10.5,family:"'DM Mono',monospace"}, LC='#98958f';
+Chart.defaults.font.family="'DM Sans',sans-serif";
+Chart.defaults.color=LC;
+Chart.register(ChartDataLabels);
+// Global datalabels OFF by default (enable per chart)
+Chart.defaults.set('plugins.datalabels', {display:false});
+function dc(id){if(CH[id]){CH[id].destroy();delete CH[id];}}
+
+const bOpts=(iy)=>({
+  responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.raw}${iy?'%':'M'}`}}},
+  scales:{
+    ...(iy?{
+      x:{ticks:{callback:v=>v+'%',font:TF,color:LC},grid:{color:GC},border:{color:'transparent'}},
+      y:{ticks:{font:TF,color:LC},grid:{display:false},border:{color:GC}}
+    }:{
+      y:{ticks:{callback:v=>'$'+v+'M',font:TF,color:LC},grid:{color:GC},border:{color:'transparent'}},
+      x:{ticks:{font:TF,color:LC},grid:{display:false},border:{color:GC}}
+    })
+  }
+});
+
+/* ═══ NAVIGATION ══════════════════════════════════════════ */
+function goTab(id,el){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tbtab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+}
+
+/* ═══ PERIOD ══════════════════════════════════════════════ */
+function periodChange(){
+  MO_CUR=parseInt(document.getElementById('moSel').value);
+  RNG_CUR=document.getElementById('rngSel').value;
+  const mn=MO[MO_CUR-1];
+  const lbl=RNG_CUR==='fy'?'Full Year 2024':RNG_CUR==='ytd'?'YTD '+mn+' 2024':mn+' 2024';
+  st('ppill',lbl);
+  updateAll();
+}
+
+/* ═══ UPDATE ALL ═════════════════════════════════════════ */
+function updateAll(){
+  const mo=MO_CUR, rng=RNG_CUR, mn=MO[mo-1];
+  const n=rng==='fy'?12:rng==='ytd'?mo:1;
+
+  // slice helpers
+  const sl=arr=>rng==='fy'?arr:rng==='ytd'?arr.slice(0,mo):[arr[mo-1]];
+  const sm=arr=>sl(arr).reduce((a,b)=>a+(b||0),0);
+  const av=arr=>sm(arr)/n;
+
+  const revT=sm(REV), budT=sm(BUD), ebAvg=av(EBPCT);
+  const fcfT=sm(FCF), subAvg=av(SUB);
+  const ebBud=22.6, ebD=ebAvg-ebBud;
+  const prevRev=revT*0.927, revD=((revT/prevRev-1)*100);
+  const fmv=v=>v>=10?'$'+v.toFixed(0)+'M':'$'+v.toFixed(1)+'M';
+
+  // period labels
+  const perL=rng==='fy'?'Full Year 2024 Forecast':rng==='ytd'?'YTD '+mn+' 2024 · '+n+' month'+(n>1?'s':'')+' consolidated':mn+' 2024 · Monthly view';
+  st('s1p',perL+' · Company X');
+  st('s2p',perL+' · Click rows to expand');
+  st('s1revcs',rng==='fy'?'Full Year Forecast vs Budget ($M)':'Actual vs Budget — monthly ($M)');
+  st('s1brcs','EBITDA bridge — key variance drivers ($M)');
+  st('s1cfcs','EBITDA → Free Cash Flow ($M)');
+
+  // KPI cards
+  function setK(id,val,cls,badge,lbl){
+    st(id,val);
+    const b=document.getElementById(id+'B');
+    if(b){b.textContent=badge;b.className='badge '+cls;}
+    st(id+'L',lbl);
+  }
+  setK('kRev',fmv(revT),revD>=0?'bu':'bdn',(revD>=0?'▲ +':'▼ ')+Math.abs(revD).toFixed(1)+'%','vs Prior Year');
+  setK('kEb',ebAvg.toFixed(1)+'%',ebD>=0?'bu':'bdn',(ebD>=0?'▲ +':'▼ ')+Math.abs(ebD).toFixed(1)+' pts','vs Budget ('+ebBud+'%)');
+  setK('kFcf',fmv(fcfT),'bn','= In-line','vs Forecast');
+  setK('kSub','+'+subAvg.toFixed(1)+'%','bu','▲ Outperform','vs Budget');
+
+  // Insights
+  const insData={
+    month:{
+      i1:`<strong>${mn} revenue of ${fmv(revT)}</strong> — ${revD>=0?'outperforming prior year by +'+Math.abs(revD).toFixed(1)+'%':'tracking below prior year by '+Math.abs(revD).toFixed(1)+'%'}. Enterprise contract closings and subscription upgrades are the primary drivers.`,
+      i2:`<strong>EBITDA margin of ${ebAvg.toFixed(1)}% in ${mn}</strong> is ${Math.abs(ebD).toFixed(1)} pts ${ebD>=0?'above':'below'} budget. ${ebD<0?'Field Services and content rights are the main drivers of compression.':'Cost discipline and revenue mix are supporting margin.'}`,
+      i3:`<strong>Subscriber growth of +${subAvg.toFixed(1)}% in ${mn}</strong>. Monthly churn of ${CHN[mo-1]}% — ${CHN[mo-1]<1.8?'below the 1.8% YTD average, a positive trend.':'tracking in line with YTD average.'} Retention campaigns delivering results.`
+    },
+    ytd:{
+      i1:`<strong>Revenue of ${fmv(revT)} YTD ${mn}</strong> outperforms prior year by <strong>+${Math.abs(revD).toFixed(1)}%</strong>. Subscription tier upgrades (+12%) and Enterprise pricing mix (+18%) are the primary drivers. Q${mo<=3?1:mo<=6?2:mo<=9?3:4} pipeline remains strong.`,
+      i2:`<strong>EBITDA margin of ${ebAvg.toFixed(1)}% YTD</strong> is ${Math.abs(ebD).toFixed(1)} pts ${ebD>=0?'above':'below'} budget (${ebBud}%). Field Services cost overrun (+$4.7M) and content rights escalation (+15%) are the main drivers. Cost review targeting $2M savings in H2.`,
+      i3:`<strong>Average subscriber growth of +${subAvg.toFixed(1)}% YTD</strong> — best performance since Q2 2022. Churn averaged ${av(CHN).toFixed(1)}% monthly. High-ARPU Enterprise focus is critical to sustaining the $22M FCF target for the full year.`
+    },
+    fy:{
+      i1:`<strong>Full Year Revenue forecast of ${fmv(revT)}</strong> represents +8.4% vs prior year. Enterprise Tier Migration is the primary driver, adding an estimated $8M incremental ARR. Q4 pipeline supports delivery.`,
+      i2:`<strong>Full Year EBITDA forecast of $47M (${ebAvg.toFixed(1)}% margin)</strong> is 1.3 pts below budget. Field Services overrun is partially offset by G&A savings. Active review targeting $2M reduction.`,
+      i3:`<strong>Free Cash Flow forecast of $22M is in-line with prior year</strong>. The churn reduction programme and Enterprise migration are the two key levers to close the $6M gap to the $28M upside scenario.`
+    }
+  };
+  const ins=insData[rng]||insData.ytd;
+  st('ii1',ins.i1);st('ii2',ins.i2);st('ii3',ins.i3);
+
+  // Charts
+  buildRev(mo,rng);
+  buildBridge(mo,rng);
+  buildCF(fcfT,revT*ebAvg/100);
+
+  // P&L: sync chip to period
+  const pmap={month:'month',ytd:'ytd',fy:'fy'};
+  renderPL(pmap[rng]||'ytd');
+  document.querySelectorAll('#plchips .chip').forEach(c=>c.classList.remove('active'));
+  const chipSel={month:0,ytd:1,fy:2}[rng]||1;
+  document.querySelectorAll('#plchips .chip')[chipSel].classList.add('active');
+}
+
+/* ═══ CHARTS: DYNAMIC ════════════════════════════════════ */
+function buildRev(mo,rng){
+  dc('cRev');
+  const fullAct=[10.2,11.4,12.1,11.8,13.2,14.1,12.8,13.9,14.7,15.4,16.0,16.5];
+  let lbs,act,bud;
+  if(rng==='fy'){lbs=MO;act=fullAct;bud=BUD;}
+  else if(rng==='ytd'){lbs=MO.slice(0,mo);act=REV.slice(0,mo);bud=BUD.slice(0,mo);}
+  else{lbs=[MO[mo-1]];act=[fullAct[mo-1]];bud=[BUD[mo-1]];}
+  CH['cRev']=new Chart(document.getElementById('cRev'),{
+    data:{labels:lbs,datasets:[
+      {type:'bar',label:'Actual',data:act,backgroundColor:'rgba(26,79,214,.13)',borderColor:'#1a4fd6',borderWidth:1.5,borderRadius:4,datalabels:{display:true,anchor:'end',align:'top',offset:2,font:{size:8.5,family:"'DM Mono',monospace",weight:'500'},color:'#1a4fd6',formatter:v=>v==null?'':'$'+v.toFixed(1)+'M'}},
+      {type:'bar',label:'Budget',data:bud,backgroundColor:'rgba(0,0,0,.04)',borderColor:'#ccc9c4',borderWidth:1,borderRadius:4,datalabels:{display:false}},
+      {type:'line',label:'Trend',data:act,borderColor:'#1a4fd6',backgroundColor:'rgba(26,79,214,.05)',fill:true,borderWidth:2,pointRadius:2,pointBackgroundColor:'#1a4fd6',tension:.4,datalabels:{display:false}}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'bottom',labels:{font:{size:10.5},boxWidth:9,padding:14}}},
+      scales:{
+        y:{ticks:{callback:v=>'$'+v+'M',font:TF,color:LC},grid:{color:GC},border:{color:'transparent'}},
+        x:{ticks:{font:TF,color:LC},grid:{display:false},border:{color:GC}}
+      }}
+  });
+}
+
+function buildBridge(mo,rng){
+  dc('cBridge');
+  const s=rng==='fy'?1.5:rng==='ytd'?mo/10:.1;
+  const vals=[30.4,-4.7,-3.2,5.2,3.8,rng==='fy'?5:-.7,30.4].map(v=>+(v*s).toFixed(1));
+  const labels=['Budget EBITDA','Field Services','Content Rights','Volume Uplift','Price/Mix',rng==='fy'?'G&A Savings':'Other Costs','Actual EBITDA'];
+  const cols=vals.map((v,i)=>i===0||i===6?'#1a4fd6':v>=0?'#067a55':'#bf1c1c');
+  CH['cBridge']=new Chart(document.getElementById('cBridge'),{
+    type:'bar',
+    data:{labels,datasets:[{data:vals,backgroundColor:cols,borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:ctx=>ctx.dataset.data[ctx.dataIndex]>=0?'top':'bottom',offset:3,font:{size:8.5,family:"'DM Mono',monospace",weight:'500'},color:ctx=>ctx.dataset.data[ctx.dataIndex]>=0?'#067a55':'#bf1c1c',formatter:v=>v==null?'':(v>=0?'+$':'-$')+Math.abs(v).toFixed(1)+'M'}},
+      scales:{
+        y:{ticks:{callback:v=>'$'+v.toFixed(0)+'M',font:TF,color:LC},grid:{color:GC},border:{color:'transparent'}},
+        x:{ticks:{font:{size:9,family:"'DM Mono',monospace"},color:LC,maxRotation:0},grid:{display:false},border:{color:GC}}
+      }}
+  });
+}
+
+function buildCF(fcf,eb){
+  dc('cCF');
+  const t=-(eb*.14),i=-(eb*.09),w=-(eb*.05),c=-(eb*.13);
+  const vals=[eb,t,i,w,c,fcf].map(v=>+v.toFixed(1));
+  CH['cCF']=new Chart(document.getElementById('cCF'),{
+    type:'bar',
+    data:{labels:['EBITDA','Taxes','Interest','Working Cap','Capex','FCF'],
+      datasets:[{data:vals,
+        backgroundColor:vals.map(v=>v>=0?'rgba(6,122,85,.15)':'rgba(191,28,28,.12)'),
+        borderColor:vals.map(v=>v>=0?'#067a55':'#bf1c1c'),
+        borderWidth:1.5,borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:ctx=>ctx.dataset.data[ctx.dataIndex]>=0?'top':'bottom',offset:3,font:{size:8.5,family:"'DM Mono',monospace",weight:'500'},color:ctx=>ctx.dataset.data[ctx.dataIndex]>=0?'#067a55':'#bf1c1c',formatter:v=>v==null?'':(v>=0?'$':'-$')+Math.abs(v).toFixed(1)+'M'}},
+      scales:{
+        y:{ticks:{callback:v=>'$'+v.toFixed(1)+'M',font:TF,color:LC},grid:{color:GC},border:{color:'transparent'}},
+        x:{ticks:{font:{size:9,family:"'DM Mono',monospace"},color:LC,maxRotation:0},grid:{display:false},border:{color:GC}}
+      }}
+  });
+}
+
+/* ═══ CHARTS: STATIC (built once) ═══════════════════════ */
+function buildStaticCharts(){
+  /* Segment donut */
+  CH['cSeg']=new Chart(document.getElementById('cSeg'),{
+    type:'doughnut',
+    data:{labels:['Enterprise 42%','SMB 31%','Consumer 19%','Advertising 8%'],
+      datasets:[{data:[42,31,19,8],backgroundColor:['#1a4fd6','#3b6fd4','#7aa2e8','#c5d6fa'],borderWidth:0,hoverOffset:5}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'66%',
+      plugins:{legend:{position:'right',labels:{font:{size:10.5},boxWidth:9,padding:12}}}}
+  });
+
+  /* Scenario Revenue */
+  CH['cScR']=new Chart(document.getElementById('cScR'),{type:'bar',
+    data:{labels:['Downside','Base Case','Upside','Budget','Prior Year'],
+      datasets:[{data:[198,218,241,220,200],
+        backgroundColor:['rgba(138,73,0,.13)','rgba(26,79,214,.13)','rgba(6,122,85,.13)','rgba(0,0,0,.06)','rgba(0,0,0,.04)'],
+        borderColor:['#c99a3a','#1a4fd6','#067a55','#ccc9c4','#e3e1dd'],
+        borderWidth:[2,2,2,1,1],borderRadius:7}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' $'+c.raw+'M'}},datalabels:{display:true,anchor:'end',align:'top',offset:3,font:{size:9,family:"'DM Mono',monospace",weight:'500'},color:'#4e4c4a',formatter:v=>'$'+v+'M'}},
+      scales:{y:{ticks:{callback:v=>'$'+v+'M',font:TF,color:LC},grid:{color:GC},border:{color:'transparent'},min:170},
+        x:{ticks:{font:TF,color:LC},grid:{display:false},border:{color:GC}}}}
+  });
+
+  /* Scenario EBITDA Margin */
+  CH['cScE']=new Chart(document.getElementById('cScE'),{type:'bar',
+    data:{labels:['Downside','Base Case','Upside','Budget','Prior Year'],
+      datasets:[{data:[17.2,21.4,25.8,22.7,23.0],
+        backgroundColor:['rgba(138,73,0,.13)','rgba(26,79,214,.13)','rgba(6,122,85,.13)','rgba(0,0,0,.06)','rgba(0,0,0,.04)'],
+        borderColor:['#c99a3a','#1a4fd6','#067a55','#ccc9c4','#e3e1dd'],
+        borderWidth:[2,2,2,1,1],borderRadius:7}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+'%'}},datalabels:{display:true,anchor:'end',align:'top',offset:3,font:{size:9,family:"'DM Mono',monospace",weight:'500'},color:'#4e4c4a',formatter:v=>v+'%'}},
+      scales:{y:{ticks:{callback:v=>v+'%',font:TF,color:LC},grid:{color:GC},border:{color:'transparent'},min:12,max:30},
+        x:{ticks:{font:TF,color:LC},grid:{display:false},border:{color:GC}}}}
+  });
+
+  /* Benchmark helper */
+  function bmk(canvId,labels,data,iY,highlightIdx){
+    CH[canvId]=new Chart(document.getElementById(canvId),{type:'bar',
+      data:{labels,datasets:[{data,
+        backgroundColor:data.map((_,i)=>i===highlightIdx?'rgba(26,79,214,.18)':'rgba(0,0,0,.06)'),
+        borderColor:data.map((_,i)=>i===highlightIdx?'#1a4fd6':'#ccc9c4'),
+        borderWidth:data.map((_,i)=>i===highlightIdx?2:1),borderRadius:4}]},
+      options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'right',offset:4,font:{size:9,family:"'DM Mono',monospace",weight:'500'},color:ctx=>ctx.dataIndex===highlightIdx?'#1a4fd6':'#4e4c4a',formatter:v=>v+(iY?'%':'%')}},
+        scales:{x:{ticks:{callback:v=>v+(iY?'%':'%'),font:TF,color:LC},grid:{color:GC},border:{color:'transparent'}},
+          y:{ticks:{font:TF,color:LC},grid:{display:false},border:{color:GC}}}}
+    });
+  }
+  bmk('cB1',['Peer Alpha','Peer Beta','Company X','Peer Avg','Peer Gamma','Peer Delta'],[27.9,24.1,21.4,21.8,19.8,16.2],true,2);
+  bmk('cB2',['Peer Beta','Company X','Peer Gamma','Peer Alpha','Peer Delta'],[11.3,8.0,6.1,4.2,2.8],true,1);
+  bmk('cB3',['Company X','Peer Alpha','Peer Beta','Peer Gamma','Peer Delta'],[1.8,1.5,2.1,2.4,3.1],true,0);
+  bmk('cB4',['Peer Alpha','Company X','Peer Beta','Peer Gamma','Peer Delta'],[7.8,9.2,10.4,11.2,13.6],true,1);
+}
+
+/* ═══ P&L TABLE ══════════════════════════════════════════ */
+function plChip(view,el){
+  document.querySelectorAll('#plchips .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  plView=view;
+  renderPL(view);
+}
+
+function renderPL(view){
+  const rows=PL[view]||PL.ytd;
+  const body=document.getElementById('plBody');
+  body.innerHTML='';
+  rows.forEach(row=>{
+    const hc=row.ch&&row.ch.length;
+    const vd=+(row.a-row.b).toFixed(1),vp=vpc(row.a,row.b);
+    const tr=document.createElement('tr');
+    if(row.sub)tr.classList.add('sub');
+    if(row.tot)tr.classList.add('tot');
+    if(hc)tr.classList.add('xrow');
+    tr.innerHTML=`<td>${hc?`<span class="xbtn" id="xb-${row.id}">›</span>`:'<span style="width:18px;display:inline-block"></span>'}${row.l}</td>
+      <td>${fM(row.a)}</td><td>${fM(row.b)}</td>
+      <td class="${vc(vd)}">${fM(vd)}</td>
+      <td class="${vc(vp)}">${fP(vp)}</td>
+      <td>${fM(row.py)}</td>`;
+    if(hc)tr.onclick=()=>{
+      const open=tr.classList.toggle('xopen');
+      const btn=document.getElementById('xb-'+row.id);
+      if(btn)btn.style.transform=open?'rotate(90deg)':'';
+      body.querySelectorAll(`[data-par="${row.id}"]`).forEach(c=>c.style.display=open?'':'none');
+    };
+    body.appendChild(tr);
+    if(hc)row.ch.forEach(c=>{
+      const cvd=+(c.a-c.b).toFixed(1),cvp=vpc(c.a,c.b);
+      const ctr=document.createElement('tr');
+      ctr.classList.add('crow');ctr.dataset.par=row.id;ctr.style.display='none';
+      ctr.innerHTML=`<td><span style="width:18px;display:inline-block"></span>${c.l}</td>
+        <td>${fM(c.a)}</td><td>${fM(c.b)}</td>
+        <td class="${vc(cvd)}">${fM(cvd)}</td>
+        <td class="${vc(cvp)}">${fP(cvp)}</td>
+        <td>${fM(c.py)}</td>`;
+      body.appendChild(ctr);
+    });
+  });
+}
+
+/* ═══ LANDING → DASH ═════════════════════════════════════ */
+function enterDash(){
+  const land=document.getElementById('landing');
+  land.style.transition='opacity .36s';land.style.opacity='0';
+  setTimeout(()=>{
+    land.style.display='none';
+    const app=document.getElementById('app');
+    app.style.display='block';
+    requestAnimationFrame(()=>{
+      app.classList.add('vis');
+      buildStaticCharts();
+      updateAll();
+    });
+  },360);
+}
+</script>
+</body>
+</html>
