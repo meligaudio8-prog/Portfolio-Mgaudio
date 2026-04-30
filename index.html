@@ -193,12 +193,12 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);-webkit-font-
 
 @media(max-width:700px){
   .main{padding:0 14px 60px;}
-  .topbar{padding:0 10px;height:auto;min-height:54px;flex-wrap:wrap;}
+  .topbar{padding:0;height:auto;min-height:auto;flex-direction:column;align-items:stretch;}
   .tbbrand{display:none;}
-  .tbnav{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-shrink:0;width:100%;}
+  .tbnav{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;width:100%;display:flex;padding:0 10px;border-bottom:1px solid var(--bd);}
   .tbnav::-webkit-scrollbar{display:none;}
-  .tbtab{font-size:11px;padding:0 10px;white-space:nowrap;flex-shrink:0;}
-  .tbright{border-left:none;padding-left:0;width:100%;justify-content:flex-start;padding:6px 0;gap:5px;flex-wrap:wrap;}
+  .tbtab{font-size:12px;padding:14px 12px;white-space:nowrap;flex-shrink:0;}
+  .tbright{border-left:none;border-top:1px solid var(--bd);padding:8px 12px;width:100%;justify-content:flex-start;gap:6px;flex-wrap:wrap;}
   .psel{font-size:10px;}
   .ppill{font-size:9px;}
   .g4,.g3,.g2,.g21,.sc-wrap{grid-template-columns:1fr!important;}
